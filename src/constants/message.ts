@@ -12,6 +12,7 @@ export const USER_MESSAGE = {
   PASSWORD_STRONG: 'Mật khẩu phải chứa ít nhất 6 ký tự, 1 chữ thường, 1 chữ hoa, 1 số và 1 ký tự đặc biệt',
   CONFIRM_PASSWORD_IS_REQUIRED: 'Xác nhận mật khẩu không được để trống',
   CONFIRM_PASSWORD_IS_NOT_MATCH: 'Xác nhận mật khẩu không khớp',
+  CONFIRM_PASSWORD_MUST_BE_STRING: 'Xác nhận mật khẩu phải là chuỗi',
   LOGIN_FAILED: 'Đăng nhập thất bại',
   USER_NOT_FOUND: 'Người dùng không tồn tại',
   USER_EXIST: 'Người dùng đã tồn tại',
