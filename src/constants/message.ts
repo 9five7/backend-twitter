@@ -33,4 +33,6 @@ export const USER_MESSAGE = {
   DATE_OF_BIRTH_IS_INVALID: 'Ngày sinh không hợp lệ',
   LOGIN_SUCCESS: 'Đăng nhập thành công',
   REGISTER_SUCCESS: 'Đăng ký thành công',
+  ACCESS_TOKEN_IS_REQUIRED: 'Access token không được để trống',
+  REFRESH_TOKEN_IS_REQUIRED: 'Refresh token không được để trống',
 } as const
