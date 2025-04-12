@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import { access } from 'fs'
-import { loginController, registerController } from '~/controllers/users.controllers'
+import { loginController, logoutController, registerController } from '~/controllers/users.controllers'
 import { accessTokenValidator, loginValidateUser, registerValidator } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handlers'
 
@@ -26,7 +25,7 @@ usersRouter.post('/register', registerValidator, wrapAsync(registerController))
  * headers: { authorization: Bearer <token> }
  *  body: { refresh_token: string }
  */
-usersRouter.post('/logout',accessTokenValidator, wrapAsync(logoutController))
+usersRouter.post('/logout', accessTokenValidator, wrapAsync(logoutController))
 usersRouter.post('/refresh-token')
 
 export default usersRouter

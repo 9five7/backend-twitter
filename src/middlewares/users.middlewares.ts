@@ -1,6 +1,7 @@
 // middlewares xửa lý dữ liệu phần trung  gian cho người dùng ví dụ đăng nhập, đăng ký
 // sẽ kiểm tra như validate dữ liệu đầu vào
 import { checkSchema } from 'express-validator'
+import { JsonWebTokenError } from 'jsonwebtoken'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
@@ -174,15 +175,66 @@ export const accessTokenValidator = validate(
                 status: httpStatus.UNAUTHORIZED
               }) // nếu không có access token thì trả về lỗi
             }
-            const decoded_authorization = await verifyToken({
-              token: access_token
-            })
-            req.user = decoded_authorization
+            try {
+              const decoded_authorization = await verifyToken({
+                token: access_token
+              })
+              req.decoded_authorization = decoded_authorization
+            } catch (error) {
+              throw new ErrorWithStatus({
+                message: (error as JsonWebTokenError).message,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
             return true // giải mã access token
           }
         }
       }
     },
     ['headers'] // ['headers'] là nơi mà mình muốn validate dữ liệu)
+  )
+)
+// chect lần lượt có tồn tại refresh token hay không -> verifyToken-> check có trong db hay ko
+export const refreshTokenValidator = validate(
+  checkSchema(
+    {
+      refresh_token: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.REFRESH_TOKEN_IS_REQUIRED
+        },
+        custom: {
+          options: async (value, { req }) => {
+            try {
+              const [decoded_refresh_token, refresh_token] = await Promise.all([
+                verifyToken({
+                  token: value
+                }),
+                databaseServices.refreshTokens.findOne({
+                  token: value
+                })
+              ])
+              if (refresh_token === null) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.REFRESH_TOKEN_OR_NOT_EXIST,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+              req.decoded_refresh_token = decoded_refresh_token
+            } catch (error) {
+              if (error instanceof ErrorWithStatus) {
+                throw new ErrorWithStatus({
+                  message: error.message,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+              throw error
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu)
   )
 )

@@ -35,4 +35,7 @@ export const USER_MESSAGE = {
   REGISTER_SUCCESS: 'Đăng ký thành công',
   ACCESS_TOKEN_IS_REQUIRED: 'Access token không được để trống',
   REFRESH_TOKEN_IS_REQUIRED: 'Refresh token không được để trống',
+  REFRESH_TOKEN_OR_NOT_EXIST: 'Refresh token không tồn tại',
+  REFRESH_TOKEN_IS_INVALID: 'Refresh token không hợp lệ',
+  LOGOUT_SUCCESS: 'Đăng xuất thành công',
 } as const
