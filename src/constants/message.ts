@@ -31,5 +31,6 @@ export const USER_MESSAGE = {
   USER_PASSWORD_RESET: 'Mật khẩu đã được đặt lại',
   USER_PASSWORD_CHANGED: 'Mật khẩu đã được thay đổi',
   DATE_OF_BIRTH_IS_INVALID: 'Ngày sinh không hợp lệ',
-  
+  LOGIN_SUCCESS: 'Đăng nhập thành công',
+  REGISTER_SUCCESS: 'Đăng ký thành công',
 } as const

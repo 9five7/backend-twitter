@@ -1,11 +1,14 @@
+import { config } from 'dotenv'
+import { ObjectId } from 'mongodb'
 import { TokenType } from '~/constants/enums'
 import { RegisterReqBody } from '~/models/requests/Users.requests'
+import RefreshToken from '~/models/schemas/RefreshToken.schema'
 
 import User from '~/models/schemas/User.schemas'
 import databaseServices from '~/services/database.services'
 import { hasPassword } from '~/utils/crypto'
 import { signToken } from '~/utils/jwt'
-
+config()
 class UsersServices {
   private signAccessToken = (user_id: string) => {
     return signToken({
@@ -29,6 +32,12 @@ class UsersServices {
       }
     })
   }
+  private signAccessTokenAndRefreshToken(user_id: string) {
+    return Promise.all([
+      this.signAccessToken(user_id), // tạo access token
+      this.signRefreshToken(user_id) // tạo refresh token
+    ])
+  }
 
   async register(payload: RegisterReqBody) {
     const result = await databaseServices.users.insertOne(
@@ -38,11 +47,17 @@ class UsersServices {
         password: hasPassword(payload.password) // mã hóa password
       })
     )
+
     const user_id = result.insertedId.toString() // lấy id của user vừa tạo
-    const [accessToken, refreshToken] = await Promise.all([
-      this.signAccessToken(user_id), // tạo access token
-      this.signRefreshToken(user_id) // tạo refresh token
-    ])
+    const [accessToken, refreshToken] = await this.signAccessTokenAndRefreshToken(user_id)
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        // tạo refresh token
+        user_id: new ObjectId(user_id),
+        token: refreshToken
+      })
+    )
+    // tạo access token và refresh token
     return {
       accessToken,
       refreshToken
@@ -52,6 +67,20 @@ class UsersServices {
     const user = await databaseServices.users.findOne({ email }) // kiểm tra xem email đã tồn tại hay chưa
     // nếu tồn tại thì trả về true
     return Boolean(user)
+  }
+  async login(user_id: string) {
+    const [accessToken, refreshToken] = await this.signAccessTokenAndRefreshToken(user_id)
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        // tạo refresh token
+        user_id: new ObjectId(user_id),
+        token: refreshToken
+      })
+    ) // tạo access token và refresh token
+    return {
+      accessToken,
+      refreshToken
+    }
   }
 }
 const usersServices = new UsersServices()

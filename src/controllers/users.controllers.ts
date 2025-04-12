@@ -1,18 +1,19 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
+import { ObjectId } from 'mongodb'
+import { USER_MESSAGE } from '~/constants/message'
 import { RegisterReqBody } from '~/models/requests/Users.requests'
-
+import User from '~/models/schemas/User.schemas'
 import usersServices from '~/services/users.services'
 // xử lý logic
-export const loginController = (req: Request, res: Response) => {
-  const { email, password } = req.body
-  if (email === 'admin' && password === 'admin') {
-    return res.status(401).json({
-      message: 'Username or password is incorrect'
-    })
-  }
-  res.json({
-    message: 'Login successfully'
+export const loginController = async (req: Request, res: Response) => {
+  const user = req.user as User
+  const user_id = user._id as ObjectId
+  // kiểm tra xem user có tồn tại hay không
+  const result = await usersServices.login(user_id.toString())
+  return res.json({
+    message: USER_MESSAGE.LOGIN_SUCCESS,
+    result
   })
 }
 export const registerController = async (
@@ -20,13 +21,9 @@ export const registerController = async (
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const result = await usersServices.register(req.body)
-    return res.json({
-      message: 'register successfully',
-      result
-    })
-  } catch (error) {
-    next(error)
-  }
+  const result = await usersServices.register(req.body)
+  return res.json({
+    message: USER_MESSAGE.REGISTER_SUCCESS,
+    result
+  })
 }
