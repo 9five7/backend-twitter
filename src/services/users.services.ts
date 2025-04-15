@@ -106,6 +106,33 @@ class UsersServices {
       message: USER_MESSAGE.LOGOUT_SUCCESS
     }
   }
+  async refreshToken(refresh_Token: string) {
+    // 1. Tìm token trong DB
+    const foundToken = await databaseServices.refreshTokens.findOne({ token: refresh_Token })
+    if (!foundToken) {
+      return {
+        message: USER_MESSAGE.REFRESH_TOKEN_NOT_FOUND
+      }
+    }
+    const user_id = foundToken.user_id.toString()
+    // 2. Tạo access token và refresh token moi
+    // 2. Xoá refresh token cũ
+    await databaseServices.refreshTokens.deleteOne({ token: refresh_Token })
+    // 3. Tạo access token và refresh token mới
+    const [access_Token, new_refresh_Token] = await this.signAccessTokenAndRefreshToken(user_id)
+    // 4. Lưu refresh token mới vào DB
+    await databaseServices.refreshTokens.insertOne(
+      new RefreshToken({
+        user_id: new ObjectId(user_id),
+        token: new_refresh_Token
+      })
+    )
+    // 5. Trả về token mới
+    return {
+      access_Token,
+      refresh_Token: new_refresh_Token
+    }
+  }
   async verifyEmail(user_id: string) {
     const [token] = await Promise.all([
       this.signAccessTokenAndRefreshToken(user_id), // tạo access token và refresh token

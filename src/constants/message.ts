@@ -41,4 +41,6 @@ export const USER_MESSAGE = {
   EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token không được để trống',
   EMAIL_VERIFY_BEFORE: 'Email đã được xác thực trước đó',
   EMAIL_VERIFY_SUCCESS: 'Xác thực email thành công',
+  REFRESH_TOKEN_NOT_FOUND: 'Refresh token không tìm thấy',
+  REFRESH_TOKEN_SUCCESS: 'Refresh token thành công'
 } as const
