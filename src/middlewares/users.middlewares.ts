@@ -1,5 +1,6 @@
 // middlewares xửa lý dữ liệu phần trung  gian cho người dùng ví dụ đăng nhập, đăng ký
 // sẽ kiểm tra như validate dữ liệu đầu vào
+import { config } from 'dotenv'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import httpStatus from '~/constants/httpStatus'
@@ -10,6 +11,7 @@ import usersServices from '~/services/users.services'
 import { hasPassword } from '~/utils/crypto'
 import { verifyToken } from '~/utils/jwt'
 import { validate } from '~/utils/validation'
+config()
 export const loginValidateUser = validate(
   checkSchema(
     {
@@ -163,12 +165,10 @@ export const accessTokenValidator = validate(
   checkSchema(
     {
       authorization: {
-        notEmpty: {
-          errorMessage: USER_MESSAGE.ACCESS_TOKEN_IS_REQUIRED
-        },
+        trim: true,
         custom: {
           options: async (value: string, { req }) => {
-            const access_token = value.split(' ')[1] // lấy access token từ header
+            const access_token = (value || '').split(' ')[1] // lấy access token từ header
             if (!access_token) {
               throw new ErrorWithStatus({
                 message: USER_MESSAGE.ACCESS_TOKEN_IS_REQUIRED,
@@ -177,7 +177,8 @@ export const accessTokenValidator = validate(
             }
             try {
               const decoded_authorization = await verifyToken({
-                token: access_token
+                token: access_token,
+                secretOrPublicKey: process.env.JWT_ACCESS_TOKEN_SECRET as string
               })
               req.decoded_authorization = decoded_authorization
             } catch (error) {
@@ -199,15 +200,20 @@ export const refreshTokenValidator = validate(
   checkSchema(
     {
       refresh_token: {
-        notEmpty: {
-          errorMessage: USER_MESSAGE.REFRESH_TOKEN_IS_REQUIRED
-        },
+        trim: true,
         custom: {
           options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: USER_MESSAGE.REFRESH_TOKEN_IS_REQUIRED,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
             try {
               const [decoded_refresh_token, refresh_token] = await Promise.all([
                 verifyToken({
-                  token: value
+                  token: value,
+                  secretOrPublicKey: process.env.JWT_REFRESH_TOKEN_SECRET as string
                 }),
                 databaseServices.refreshTokens.findOne({
                   token: value
@@ -230,6 +236,32 @@ export const refreshTokenValidator = validate(
               throw error
             }
 
+            return true
+          }
+        }
+      }
+    },
+    ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu)
+  )
+)
+export const emailVerifyTokenValidator = validate(
+  checkSchema(
+    {
+      email_verify_token: {
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_IS_REQUIRED,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
+            const decoded_email_verify_token = await verifyToken({
+              token: value,
+              secretOrPublicKey: process.env.JWT_EMAIL_VERIFY_TOKEN_SECRET as string
+            })
+            req.decoded_email_verify_token = decoded_email_verify_token
             return true
           }
         }

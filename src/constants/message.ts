@@ -38,4 +38,7 @@ export const USER_MESSAGE = {
   REFRESH_TOKEN_OR_NOT_EXIST: 'Refresh token không tồn tại',
   REFRESH_TOKEN_IS_INVALID: 'Refresh token không hợp lệ',
   LOGOUT_SUCCESS: 'Đăng xuất thành công',
+  EMAIL_VERIFY_TOKEN_IS_REQUIRED: 'Email verify token không được để trống',
+  EMAIL_VERIFY_BEFORE: 'Email đã được xác thực trước đó',
+  EMAIL_VERIFY_SUCCESS: 'Xác thực email thành công',
 } as const
