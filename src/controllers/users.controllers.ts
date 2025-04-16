@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { LogoutReqBody, RegisterReqBody, TokenPayload } from '~/models/requests/Users.requests'
@@ -61,6 +62,24 @@ export const emailVerifyTokenController = async (
     res.json({ message: USER_MESSAGE.EMAIL_VERIFY_BEFORE })
   }
   const result = await usersServices.verifyEmail(user_id)
+  res.json({
+    message: USER_MESSAGE.EMAIL_VERIFY_SUCCESS,
+    result
+  })
+}
+export const resendEmailVerifyTokenController = async (req: Request, res: Response, next: NextFunction) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const user = await databaseServices.users.findOne({ _id: new ObjectId(user_id) })
+  // nếu user không tồn tại thì trả về lỗi
+  if (!user) {
+    res.status(httpStatus.NOT_FOUND).json({ message: USER_MESSAGE.USER_NOT_FOUND })
+    return
+  }
+  //đã verify rồi thì sẽ ko báo lỗi
+  if (user.verify_status === UserVerifyStatus.Verified) {
+    res.json({ message: USER_MESSAGE.EMAIL_VERIFY_BEFORE })
+  }
+  const result = await usersServices.resendEmailVerifyToken(user_id)
   res.json({
     message: USER_MESSAGE.EMAIL_VERIFY_SUCCESS,
     result
