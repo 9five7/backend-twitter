@@ -4,7 +4,7 @@ import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
-import { LogoutReqBody, RegisterReqBody, TokenPayload } from '~/models/requests/Users.requests'
+import { ForgotPasswordReqBody, LogoutReqBody, RegisterReqBody, TokenPayload } from '~/models/requests/Users.requests'
 import User from '~/models/schemas/User.schemas'
 import databaseServices from '~/services/database.services'
 import usersServices from '~/services/users.services'
@@ -82,6 +82,18 @@ export const resendEmailVerifyTokenController = async (req: Request, res: Respon
   const result = await usersServices.resendEmailVerifyToken(user_id)
   res.json({
     message: USER_MESSAGE.EMAIL_VERIFY_SUCCESS,
+    result
+  })
+}
+export const forgotPasswordController = async (
+  req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { _id } = req.user as User
+  const result = await usersServices.forgotPassword((_id as ObjectId).toString())
+  // nếu user không tồn tại thì trả về lỗi
+  res.json({
     result
   })
 }

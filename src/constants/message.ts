@@ -43,5 +43,7 @@ export const USER_MESSAGE = {
   EMAIL_VERIFY_SUCCESS: 'Xác thực email thành công',
   REFRESH_TOKEN_NOT_FOUND: 'Refresh token không tìm thấy',
   REFRESH_TOKEN_SUCCESS: 'Refresh token thành công',
-  RESEND_EMAIL_VERIFY_TOKEN_SUCCESS: 'Gửi lại email xác thực thành công'
+  RESEND_EMAIL_VERIFY_TOKEN_SUCCESS: 'Gửi lại email xác thực thành công',
+  FORGOT_PASSWORD_SUCCESS: 'Đặt lại mật khẩu thành công',
+  CHECK_EMAIL_TO_RESET_PASSWORD: 'Vui lòng kiểm tra email để đặt lại mật khẩu',
 } as const
