@@ -3,6 +3,7 @@
 import { config } from 'dotenv'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
+import { ObjectId } from 'mongodb'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
@@ -281,7 +282,7 @@ export const forgotPasswordValidator = validate(
         custom: {
           options: async (value, { req }) => {
             const user = await databaseServices.users.findOne({
-              email: value,
+              email: value
             }) // kiểm tra xem email đã tồn tại hay chưa
             if (!user) {
               throw new Error(USER_MESSAGE.USER_NOT_FOUND)
@@ -293,5 +294,151 @@ export const forgotPasswordValidator = validate(
       }
     },
     ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu)
+  )
+)
+export const verifyForgotPasswordValidator = validate(
+  checkSchema(
+    {
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_IS_REQUIRED,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
+            try {
+              const decoded_forgot_password_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_FORGOT_PASSWORD_TOKEN_SECRET as string
+              })
+              const { user_id } = decoded_forgot_password_token
+              const user = await databaseServices.users.findOne({ _id: new ObjectId(user_id) })
+              if (!user) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.USER_NOT_FOUND,
+                  status: httpStatus.NOT_FOUND
+                })
+              }
+              if (user.forgot_password_token !== value) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.FORGOT_PASSWORD_INVALID,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+            } catch (error) {
+              if (error instanceof ErrorWithStatus) {
+                throw new ErrorWithStatus({
+                  message: error.message,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+              throw error
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu)
+  )
+)
+export const resetPasswordValidator = validate(
+  checkSchema(
+    {
+      password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 6, max: 50 },
+          errorMessage: USER_MESSAGE.PASSWORD_LENGTH
+        },
+        isStrongPassword: {
+          options: {
+            minLength: 6,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+          },
+          errorMessage: USER_MESSAGE.PASSWORD_STRONG
+        },
+        trim: true
+      },
+      confirm_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.CONFIRM_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.CONFIRM_PASSWORD_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 6, max: 50 },
+          errorMessage: USER_MESSAGE.PASSWORD_LENGTH
+        },
+        isStrongPassword: {
+          options: {
+            minLength: 6,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+          },
+          errorMessage: USER_MESSAGE.PASSWORD_STRONG
+        }
+      },
+      forgot_password_token: {
+        trim: true,
+        custom: {
+          options: async (value, { req }) => {
+            if (!value) {
+              throw new ErrorWithStatus({
+                message: USER_MESSAGE.EMAIL_VERIFY_TOKEN_IS_REQUIRED,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
+            try {
+              const decoded_forgot_password_token = await verifyToken({
+                token: value,
+                secretOrPublicKey: process.env.JWT_FORGOT_PASSWORD_TOKEN_SECRET as string
+              })
+              const { user_id } = decoded_forgot_password_token
+              const user = await databaseServices.users.findOne({ _id: new ObjectId(user_id) })
+              if (!user) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.USER_NOT_FOUND,
+                  status: httpStatus.NOT_FOUND
+                })
+              }
+              if (user.forgot_password_token !== value) {
+                throw new ErrorWithStatus({
+                  message: USER_MESSAGE.FORGOT_PASSWORD_INVALID,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+              req.decoded_forgot_password_token = decoded_forgot_password_token
+            } catch (error) {
+              if (error instanceof ErrorWithStatus) {
+                throw new ErrorWithStatus({
+                  message: error.message,
+                  status: httpStatus.UNAUTHORIZED
+                })
+              }
+              throw error
+            }
+
+            return true
+          }
+        }
+      }
+    },
+    ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu
   )
 )

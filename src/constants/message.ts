@@ -46,4 +46,8 @@ export const USER_MESSAGE = {
   RESEND_EMAIL_VERIFY_TOKEN_SUCCESS: 'Gửi lại email xác thực thành công',
   FORGOT_PASSWORD_SUCCESS: 'Đặt lại mật khẩu thành công',
   CHECK_EMAIL_TO_RESET_PASSWORD: 'Vui lòng kiểm tra email để đặt lại mật khẩu',
+  FORGOT_PASSWORD_INVALID: 'Đặt lại mật khẩu không hợp lệ',
+  VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Xác thực đặt lại mật khẩu thành công',
+  USER_PASSWORD_RESET_SUCCESS: 'Đặt lại mật khẩu thành công',
+  
 } as const

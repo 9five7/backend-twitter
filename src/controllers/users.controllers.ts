@@ -4,7 +4,14 @@ import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
-import { ForgotPasswordReqBody, LogoutReqBody, RegisterReqBody, TokenPayload } from '~/models/requests/Users.requests'
+import {
+  ForgotPasswordReqBody,
+  LogoutReqBody,
+  RegisterReqBody,
+  ResetPasswordReqBody,
+  TokenPayload,
+  VerifyForgotPasswordReqBody
+} from '~/models/requests/Users.requests'
 import User from '~/models/schemas/User.schemas'
 import databaseServices from '~/services/database.services'
 import usersServices from '~/services/users.services'
@@ -93,6 +100,27 @@ export const forgotPasswordController = async (
   const { _id } = req.user as User
   const result = await usersServices.forgotPassword((_id as ObjectId).toString())
   // nếu user không tồn tại thì trả về lỗi
+  res.json({
+    result
+  })
+}
+export const verifyForgotPasswordController = async (
+  req: Request<ParamsDictionary, any, VerifyForgotPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  res.json({
+    message: USER_MESSAGE.VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS
+  })
+}
+export const resetPasswordController = async (
+  req: Request<ParamsDictionary, any, ResetPasswordReqBody>,
+  res: Response,
+  next: NextFunction
+) => {
+  const { user_id } = req.decoded_forgot_password_token as TokenPayload
+  const { password } = req.body
+  const result = await usersServices.resetPassword(user_id, password)
   res.json({
     result
   })
