@@ -211,6 +211,21 @@ class UsersServices {
       message: USER_MESSAGE.USER_PASSWORD_RESET_SUCCESS
     }
   }
+  async getMe(user_id: string) {
+    const user = await databaseServices.users.findOne(
+      { _id: new ObjectId(user_id) },
+      {
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        } // không trả về password, email_verify_token, forgot_password_token
+      }
+    )
+    return {
+      user
+    }
+  }
 }
 const usersServices = new UsersServices()
 export default usersServices

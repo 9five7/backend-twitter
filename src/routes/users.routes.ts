@@ -1,7 +1,9 @@
 import { Router } from 'express'
+import { get } from 'lodash'
 import {
   emailVerifyTokenController,
   forgotPasswordController,
+  getMeController,
   loginController,
   logoutController,
   refreshTokenController,
@@ -75,4 +77,17 @@ usersRouter.post('/verify-forgot-password', verifyForgotPasswordValidator, wrapA
  *  body: {forgot-password:string ,password:string, confirm_password:string }
  */
 usersRouter.post('/reset-password', resetPasswordValidator, wrapAsync(resetPasswordController))
+/**
+ * description: get profile
+ * path:/me
+ *  method: GET
+ *  body: {authorization:Bearer<access_token>}
+ */
+usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
+/**
+ * description: updated my profile
+ * path:/me
+ *  method: PATCH
+ *  body: {authorization:Bearer<access_token>}
+ */
 export default usersRouter

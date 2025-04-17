@@ -49,5 +49,6 @@ export const USER_MESSAGE = {
   FORGOT_PASSWORD_INVALID: 'Đặt lại mật khẩu không hợp lệ',
   VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Xác thực đặt lại mật khẩu thành công',
   USER_PASSWORD_RESET_SUCCESS: 'Đặt lại mật khẩu thành công',
+  GET_ME_SUCCESS: 'Lấy thông tin người dùng thành công',
   
 } as const
