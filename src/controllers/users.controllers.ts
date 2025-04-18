@@ -20,7 +20,7 @@ export const loginController = async (req: Request, res: Response) => {
   const user = req.user as User
   const user_id = user._id as ObjectId
   // kiểm tra xem user có tồn tại hay không
-  const result = await usersServices.login(user_id.toString())
+  const result = await usersServices.login({ user_id: user_id.toString(), verify: user.verify })
   res.json({
     message: USER_MESSAGE.LOGIN_SUCCESS,
     result
@@ -83,7 +83,7 @@ export const resendEmailVerifyTokenController = async (req: Request, res: Respon
     return
   }
   //đã verify rồi thì sẽ ko báo lỗi
-  if (user.verify_status === UserVerifyStatus.Verified) {
+  if (user.verify === UserVerifyStatus.Verified) {
     res.json({ message: USER_MESSAGE.EMAIL_VERIFY_BEFORE })
   }
   const result = await usersServices.resendEmailVerifyToken(user_id)
@@ -97,8 +97,8 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { _id } = req.user as User
-  const result = await usersServices.forgotPassword((_id as ObjectId).toString())
+  const { _id, verify } = req.user as User
+  const result = await usersServices.forgotPassword({ user_id: (_id as ObjectId).toString(), verify })
   // nếu user không tồn tại thì trả về lỗi
   res.json({
     result
@@ -133,3 +133,5 @@ export const getMeController = async (req: Request, res: Response, next: NextFun
     result
   })
 }
+export const updateMeController = async (req: Request, res: Response, next: NextFunction) => {
+  

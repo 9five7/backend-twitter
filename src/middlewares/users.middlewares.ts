@@ -1,12 +1,15 @@
 // middlewares xửa lý dữ liệu phần trung  gian cho người dùng ví dụ đăng nhập, đăng ký
 // sẽ kiểm tra như validate dữ liệu đầu vào
 import { config } from 'dotenv'
+import { NextFunction, Request, Response } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { ObjectId } from 'mongodb'
+import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
+import { TokenPayload } from '~/models/requests/Users.requests'
 import databaseServices from '~/services/database.services'
 import usersServices from '~/services/users.services'
 import { hasPassword } from '~/utils/crypto'
@@ -442,3 +445,13 @@ export const resetPasswordValidator = validate(
     ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu
   )
 )
+export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
+  const { verify } = req.decoded_authorization as TokenPayload
+  if (verify !== UserVerifyStatus.Verified) {
+    throw new ErrorWithStatus({
+      message: USER_MESSAGE.USER_NOT_VERIFIED,
+      status: httpStatus.FORBIDDEN
+    })
+  }
+  next()
+}

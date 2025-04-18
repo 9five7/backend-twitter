@@ -11,7 +11,7 @@ interface UserType {
   updated_at?: Date
   email_verify_token?: string
   forgot_password_token?: string
-  verify_status?: UserVerifyStatus
+  verify?: UserVerifyStatus
 
   bio?: string
   location?: string
@@ -31,7 +31,7 @@ export default class User {
   updated_at: Date
   email_verify_token: string
   forgot_password_token: string
-  verify_status: UserVerifyStatus
+  verify: UserVerifyStatus
 
   bio: string
   location: string
@@ -50,7 +50,7 @@ export default class User {
     this.email_verify_token = user.email_verify_token || ''
 
     this.forgot_password_token = user.forgot_password_token || ''
-    this.verify_status = user.verify_status || UserVerifyStatus.Unverified
+    this.verify = user.verify || UserVerifyStatus.Unverified
     this.bio = user.bio || ''
     this.location = user.location || ''
     this.website = user.website || ''

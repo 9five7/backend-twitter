@@ -20,6 +20,7 @@ import {
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  verifiedUserValidator,
   verifyForgotPasswordValidator
 } from '~/middlewares/users.middlewares'
 import { wrapAsync } from '~/utils/handlers'
@@ -90,4 +91,5 @@ usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
  *  method: PATCH
  *  body: {authorization:Bearer<access_token>}
  */
+usersRouter.patch('/me', accessTokenValidator, verifiedUserValidator, wrapAsync(updateMeController))
 export default usersRouter
