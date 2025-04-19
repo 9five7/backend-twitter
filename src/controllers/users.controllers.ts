@@ -1,12 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
-import { pick } from 'lodash'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import {
+  FollowReqBody,
   ForgotPasswordReqBody,
+  GetProfileReqParams,
   LogoutReqBody,
   RegisterReqBody,
   ResetPasswordReqBody,
@@ -149,11 +150,19 @@ export const updateMeController = async (
     result: user
   })
 }
-export const getProfileController = async (req: Request<{ username: string }>, res: Response, next: NextFunction) => {
+export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response, next: NextFunction) => {
   const { username } = req.params
   const user = await usersServices.getProfile(username)
   res.json({
     message: USER_MESSAGE.GET_PROFILE_SUCCESS,
     result: user
+  })
+}
+export const followController = async (req: Request<ParamsDictionary, any, FollowReqBody>, res: Response) => {
+  const { user_id } = req.decoded_authorization as TokenPayload
+  const { followed_user_id } = req.body
+  const result = await usersServices.follow(user_id, followed_user_id)
+  res.json({
+    result
   })
 }

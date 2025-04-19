@@ -447,7 +447,6 @@ export const resetPasswordValidator = validate(
 )
 export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
   const { verify } = req.decoded_authorization as TokenPayload
-  console.log('verify', verify)
   if (verify !== UserVerifyStatus.Verified) {
     throw new ErrorWithStatus({
       message: USER_MESSAGE.USER_NOT_VERIFIED,
@@ -547,4 +546,27 @@ export const updateMeValidator = validate(
     },
     ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu
   )
+)
+export const followValidator = validate(
+  checkSchema({
+    followed_user_id: {
+      custom: {
+        options: async (value, { req }) => {
+          if (!ObjectId.isValid(value)) {
+            throw new ErrorWithStatus({
+              message: USER_MESSAGE.INVALID_FOLLOW_USER_ID,
+              status: httpStatus.NOT_FOUND
+            })
+          }
+          const followed_user = await databaseServices.users.findOne({ _id: new ObjectId(value) })
+          if (followed_user === null) {
+            throw new ErrorWithStatus({
+              message: USER_MESSAGE.USER_NOT_FOUND,
+              status: httpStatus.NOT_FOUND
+            })
+          }
+        }
+      }
+    }
+  })
 )

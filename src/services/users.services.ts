@@ -5,6 +5,7 @@ import httpStatus from '~/constants/httpStatus'
 import { USER_MESSAGE } from '~/constants/message'
 import { ErrorWithStatus } from '~/models/errors'
 import { RegisterReqBody, UpdateMeReqBody } from '~/models/requests/Users.requests'
+import Follower from '~/models/schemas/Follower.schema'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 
 import User from '~/models/schemas/User.schemas'
@@ -291,6 +292,26 @@ class UsersServices {
     }
     return {
       user
+    }
+  }
+  async follow(user_id: string, followed_user_id: string) {
+    const follower = await databaseServices.followers.findOne({
+      user_id: new ObjectId(user_id),
+      followed_user_id: new ObjectId(followed_user_id)
+    })
+    if (follower === null) {
+      await databaseServices.followers.insertOne(
+        new Follower({
+          user_id: new ObjectId(user_id),
+          followed_user_id: new ObjectId(followed_user_id)
+        })
+      )
+      return {
+        message: USER_MESSAGE.FOLLOW_SUCCESS
+      }
+    }
+    return {
+      message: USER_MESSAGE.FOLLOWED
     }
   }
 }

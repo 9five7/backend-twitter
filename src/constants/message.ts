@@ -64,5 +64,7 @@ export const USER_MESSAGE = {
   COVER_PHOTO_LENGTH: 'Ảnh bìa phải từ 1 đến 200 ký tự',
   UPDATE_ME_SUCCESS: 'Cập nhật thông tin người dùng thành công',
   GET_PROFILE_SUCCESS: 'Lấy thông tin người dùng thành công',
-  
+  FOLLOW_SUCCESS: 'theo dõi thành công',
+  INVALID_FOLLOW_USER_ID:'ID người dùng không hợp lệ',
+  FOLLOWED: 'người dùng đã được theo dõi'
 } as const

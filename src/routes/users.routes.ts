@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import {
   emailVerifyTokenController,
+  followController,
   getMeController,
   getProfileController,
   loginController,
@@ -16,6 +17,7 @@ import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
   emailVerifyTokenValidator,
+  followValidator,
   loginValidateUser,
   refreshTokenValidator,
   registerValidator,
@@ -109,7 +111,6 @@ usersRouter.patch(
     'cover_photo'
   ]),
   wrapAsync(updateMeController)
-  
 )
 /**
  * description: get user profile
@@ -118,4 +119,13 @@ usersRouter.patch(
 
  */
 usersRouter.get('/:username', wrapAsync(getProfileController))
+/**
+ * description: follow someone
+ * path:/:username
+ *  method: POST
+ * headers: {authorization:Bearer<access_token>}
+ * body: {followed_user_id:string}
+
+ */
+usersRouter.post('/follow', accessTokenValidator, verifiedUserValidator, followValidator, wrapAsync(followController))
 export default usersRouter
