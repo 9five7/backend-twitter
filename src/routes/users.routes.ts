@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   emailVerifyTokenController,
   getMeController,
+  getProfileController,
   loginController,
   logoutController,
   refreshTokenController,
@@ -108,5 +109,13 @@ usersRouter.patch(
     'cover_photo'
   ]),
   wrapAsync(updateMeController)
+  
 )
+/**
+ * description: get user profile
+ * path:/:username
+ *  method: GET
+
+ */
+usersRouter.get('/:username', wrapAsync(getProfileController))
 export default usersRouter

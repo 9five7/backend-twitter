@@ -149,3 +149,11 @@ export const updateMeController = async (
     result: user
   })
 }
+export const getProfileController = async (req: Request<{ username: string }>, res: Response, next: NextFunction) => {
+  const { username } = req.params
+  const user = await usersServices.getProfile(username)
+  res.json({
+    message: USER_MESSAGE.GET_PROFILE_SUCCESS,
+    result: user
+  })
+}

@@ -62,6 +62,7 @@ export const USER_MESSAGE = {
   AVATAR_LENGTH: 'Avatar phải từ 1 đến 200 ký tự',
   COVER_PHOTO_MUST_BE_STRING: 'Ảnh bìa phải là chuỗi',
   COVER_PHOTO_LENGTH: 'Ảnh bìa phải từ 1 đến 200 ký tự',
-  UPDATE_ME_SUCCESS: 'Cap nhat nguoi dung thanh cong',
+  UPDATE_ME_SUCCESS: 'Cập nhật thông tin người dùng thành công',
+  GET_PROFILE_SUCCESS: 'Lấy thông tin người dùng thành công',
   
 } as const
