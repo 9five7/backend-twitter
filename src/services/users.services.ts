@@ -2,7 +2,7 @@ import { config } from 'dotenv'
 import { ObjectId } from 'mongodb'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { USER_MESSAGE } from '~/constants/message'
-import { RegisterReqBody } from '~/models/requests/Users.requests'
+import { RegisterReqBody, UpdateMeReqBody } from '~/models/requests/Users.requests'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
 
 import User from '~/models/schemas/User.schemas'
@@ -241,6 +241,30 @@ class UsersServices {
     return {
       user
     }
+  }
+  async updateMe(user_id: string, payload: UpdateMeReqBody) {
+    const _payload = payload.date_of_birth ? { ...payload, date_of_birth: new Date(payload.date_of_birth) } : payload
+    const user = await databaseServices.users.findOneAndUpdate(
+      { _id: new ObjectId(user_id) },
+      {
+        $set: {
+          ...(_payload as UpdateMeReqBody & { date_of_birth?: Date })
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      },
+      {
+        projection: {
+          password: 0,
+          email_verify_token: 0,
+          forgot_password_token: 0
+        },
+        returnDocument: 'after'
+      }
+    )
+
+    return user
   }
 }
 const usersServices = new UsersServices()

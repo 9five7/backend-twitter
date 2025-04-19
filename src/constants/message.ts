@@ -50,5 +50,18 @@ export const USER_MESSAGE = {
   VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESS: 'Xác thực đặt lại mật khẩu thành công',
   USER_PASSWORD_RESET_SUCCESS: 'Đặt lại mật khẩu thành công',
   GET_ME_SUCCESS: 'Lấy thông tin người dùng thành công',
+  BIO_MUST_BE_STRING: 'Giới thiệu phải là chuỗi',
+  BIO_LENGTH: 'Giới thiệu phải từ 1 đến 200 ký tự',
+  LOCATION_MUST_BE_STRING: 'Vị trí phải là chuỗi',
+  LOCATION_LENGTH: 'Vị trí phải từ 1 đến 100 ký tự',
+  WEBSITE_MUST_BE_STRING: 'Website phải là chuỗi',
+  WEBSITE_LENGTH: 'Website phải từ 1 đến 100 ký tự',
+  USERNAME_MUST_BE_STRING: 'Tên người dùng phải là chuỗi',
+  USERNAME_LENGTH: 'Tên người dùng phải từ 1 đến 50 ký tự',
+  AVATAR_MUST_BE_STRING: 'Avatar phải là chuỗi',
+  AVATAR_LENGTH: 'Avatar phải từ 1 đến 200 ký tự',
+  COVER_PHOTO_MUST_BE_STRING: 'Ảnh bìa phải là chuỗi',
+  COVER_PHOTO_LENGTH: 'Ảnh bìa phải từ 1 đến 200 ký tự',
+  UPDATE_ME_SUCCESS: 'Cap nhat nguoi dung thanh cong',
   
 } as const

@@ -447,6 +447,7 @@ export const resetPasswordValidator = validate(
 )
 export const verifiedUserValidator = (req: Request, res: Response, next: NextFunction) => {
   const { verify } = req.decoded_authorization as TokenPayload
+  console.log('verify', verify)
   if (verify !== UserVerifyStatus.Verified) {
     throw new ErrorWithStatus({
       message: USER_MESSAGE.USER_NOT_VERIFIED,
@@ -455,3 +456,95 @@ export const verifiedUserValidator = (req: Request, res: Response, next: NextFun
   }
   next()
 }
+export const updateMeValidator = validate(
+  checkSchema(
+    {
+      name: {
+        notEmpty: undefined,
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.NAME_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 100 },
+          errorMessage: USER_MESSAGE.NAME_LENGTH
+        },
+        trim: true
+      },
+      date_of_birth: {
+        optional: true,
+        isISO8601: {
+          options: { strict: true, strictSeparator: true },
+          errorMessage: USER_MESSAGE.DATE_OF_BIRTH_IS_INVALID
+        }
+      },
+      bio: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.BIO_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 200 },
+          errorMessage: USER_MESSAGE.BIO_LENGTH
+        },
+        trim: true
+      },
+      location: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.LOCATION_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 200 },
+          errorMessage: USER_MESSAGE.LOCATION_LENGTH
+        },
+        trim: true
+      },
+      website: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.WEBSITE_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 200 },
+          errorMessage: USER_MESSAGE.WEBSITE_LENGTH
+        },
+        trim: true
+      },
+      username: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.USERNAME_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 50 },
+          errorMessage: USER_MESSAGE.USERNAME_LENGTH
+        },
+        trim: true
+      },
+      avatar: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.AVATAR_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 400 },
+          errorMessage: USER_MESSAGE.AVATAR_LENGTH
+        },
+        trim: true
+      },
+      cover_photo: {
+        optional: true,
+        isString: {
+          errorMessage: USER_MESSAGE.COVER_PHOTO_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 1, max: 400 },
+          errorMessage: USER_MESSAGE.COVER_PHOTO_LENGTH
+        },
+        trim: true
+      }
+    },
+    ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu
+  )
+)

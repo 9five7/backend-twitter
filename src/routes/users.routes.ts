@@ -1,8 +1,6 @@
 import { Router } from 'express'
-import { get } from 'lodash'
 import {
   emailVerifyTokenController,
-  forgotPasswordController,
   getMeController,
   loginController,
   logoutController,
@@ -10,19 +8,22 @@ import {
   registerController,
   resendEmailVerifyTokenController,
   resetPasswordController,
+  updateMeController,
   verifyForgotPasswordController
 } from '~/controllers/users.controllers'
+import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
   emailVerifyTokenValidator,
-  forgotPasswordValidator,
   loginValidateUser,
   refreshTokenValidator,
   registerValidator,
   resetPasswordValidator,
+  updateMeValidator,
   verifiedUserValidator,
   verifyForgotPasswordValidator
 } from '~/middlewares/users.middlewares'
+import { UpdateMeReqBody } from '~/models/requests/Users.requests'
 import { wrapAsync } from '~/utils/handlers'
 
 const usersRouter = Router()
@@ -91,5 +92,21 @@ usersRouter.get('/me', accessTokenValidator, wrapAsync(getMeController))
  *  method: PATCH
  *  body: {authorization:Bearer<access_token>}
  */
-usersRouter.patch('/me', accessTokenValidator, verifiedUserValidator, wrapAsync(updateMeController))
+usersRouter.patch(
+  '/me',
+  accessTokenValidator,
+  verifiedUserValidator,
+  updateMeValidator,
+  filterMiddleware<UpdateMeReqBody>([
+    'name',
+    'date_of_birth',
+    'bio',
+    'location',
+    'website',
+    'username',
+    'avatar',
+    'cover_photo'
+  ]),
+  wrapAsync(updateMeController)
+)
 export default usersRouter
