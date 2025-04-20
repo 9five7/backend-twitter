@@ -65,6 +65,11 @@ export const USER_MESSAGE = {
   UPDATE_ME_SUCCESS: 'Cập nhật thông tin người dùng thành công',
   GET_PROFILE_SUCCESS: 'Lấy thông tin người dùng thành công',
   FOLLOW_SUCCESS: 'theo dõi thành công',
-  INVALID_FOLLOW_USER_ID:'ID người dùng không hợp lệ',
-  FOLLOWED: 'người dùng đã được theo dõi'
+  INVALID_FOLLOW_USER_ID: 'ID người dùng không hợp lệ',
+  FOLLOWED: 'người dùng đã được theo dõi',
+  ALREADY_UNFOLLOWED: 'người dùng đã bỏ theo dõi',
+  UNFOLLOW_SUCCESS: 'bỏ theo dõi thành công',
+  USERNAME_IS_INVALID:
+    'Tên đăng nhập không hợp lệ. Phải từ 3–20 ký tự, không bắt đầu bằng số, chỉ gồm chữ cái, số, dấu chấm (.), gạch dưới (_) hoặc gạch ngang (-).',
+  USERNAME_IS_EXIST: 'Tên người dùng đã tồn tại'
 } as const
