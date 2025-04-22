@@ -14,6 +14,11 @@ export interface GetProfileReqParams {
 export interface FollowReqBody {
   followed_user_id: string
 }
+export interface changePasswordReqBody {
+  old_password: string
+  password: string
+  confirm_password: string
+}
 export interface UpdateMeReqBody {
   name?: string
   date_of_birth?: string

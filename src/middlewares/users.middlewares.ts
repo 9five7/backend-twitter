@@ -610,3 +610,108 @@ export const unFollowValidator = validate(
     ['params']
   )
 )
+export const changePasswordValidator = validate(
+  checkSchema(
+    {
+      old_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 6, max: 50 },
+          errorMessage: USER_MESSAGE.PASSWORD_LENGTH
+        },
+        isStrongPassword: {
+          options: {
+            minLength: 6,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+          },
+          errorMessage: USER_MESSAGE.PASSWORD_STRONG
+        },
+        custom: {
+          options: async (value: string, { req }) => {
+            const { user_id } = req.decoded_authorization as TokenPayload
+            const user = await databaseServices.users.findOne({ _id: new ObjectId(user_id) })
+            if (!user) {
+              throw new ErrorWithStatus({
+                message: USER_MESSAGE.USER_NOT_FOUND,
+                status: httpStatus.NOT_FOUND
+              })
+            }
+            const { password } = user
+            const isMatch = hasPassword(value) === password
+            if (!isMatch) {
+              throw new ErrorWithStatus({
+                message: USER_MESSAGE.OLD_PASSWORD_IS_NOT_MATCH,
+                status: httpStatus.UNAUTHORIZED
+              })
+            }
+          }
+        },
+
+        trim: true
+      },
+      password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.PASSWORD_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 6, max: 50 },
+          errorMessage: USER_MESSAGE.PASSWORD_LENGTH
+        },
+        isStrongPassword: {
+          options: {
+            minLength: 6,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+          },
+          errorMessage: USER_MESSAGE.PASSWORD_STRONG
+        },
+        trim: true
+      },
+      confirm_password: {
+        notEmpty: {
+          errorMessage: USER_MESSAGE.CONFIRM_PASSWORD_IS_REQUIRED
+        },
+        isString: {
+          errorMessage: USER_MESSAGE.CONFIRM_PASSWORD_MUST_BE_STRING
+        },
+        isLength: {
+          options: { min: 6, max: 50 },
+          errorMessage: USER_MESSAGE.PASSWORD_LENGTH
+        },
+        isStrongPassword: {
+          options: {
+            minLength: 6,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+          },
+          errorMessage: USER_MESSAGE.PASSWORD_STRONG
+        },
+        custom: {
+          options: (value, { req }) => {
+            if (value !== req.body.password) {
+              throw new Error(USER_MESSAGE.CONFIRM_PASSWORD_IS_NOT_MATCH)
+            }
+            return true
+          }
+        },
+        trim: true
+      }
+    },
+    ['body'] // ['body'] là nơi mà mình muốn validate dữ liệu)
+  )
+)

@@ -71,5 +71,7 @@ export const USER_MESSAGE = {
   UNFOLLOW_SUCCESS: 'bỏ theo dõi thành công',
   USERNAME_IS_INVALID:
     'Tên đăng nhập không hợp lệ. Phải từ 3–20 ký tự, không bắt đầu bằng số, chỉ gồm chữ cái, số, dấu chấm (.), gạch dưới (_) hoặc gạch ngang (-).',
-  USERNAME_IS_EXIST: 'Tên người dùng đã tồn tại'
+  USERNAME_IS_EXIST: 'Tên người dùng đã tồn tại',
+  CHANGE_PASSWORD_SUCCESS: 'Đổi mật khẩu thành công',
+  OLD_PASSWORD_IS_NOT_MATCH: 'Mật khẩu cũ không khớp',
 } as const
