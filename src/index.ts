@@ -1,5 +1,6 @@
 import { config } from 'dotenv'
 import express from 'express'
+import { UPLOAD_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouter from '~/routes/medias.routes'
 import usersRouter from '~/routes/users.routes'
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 databaseServices.connect()
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/medias', express.static(UPLOAD_DIR))
 app.use(defaultErrorHandler)
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
