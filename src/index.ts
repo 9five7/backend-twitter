@@ -1,11 +1,13 @@
+import { config } from 'dotenv'
 import express from 'express'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouter from '~/routes/medias.routes'
 import usersRouter from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
 import { initFolder } from '~/utils/file'
+config()
 const app = express()
-const port = 5000
+const port = process.env.PORT || 5000
 // tạo folder upload nếu chưa có
 initFolder()
 app.use(express.json())
