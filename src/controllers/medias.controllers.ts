@@ -36,10 +36,10 @@ export const serveVideoStreamController = async (req: Request, res: Response, ne
   // lấy giá trị bytes bắt đầu từ header range
   const start = Number(range.replace(/\D/g, ''))
   // lấy giá trị bytes kết thúc từ header range
-  const end = Math.min(start + chunkSize, videoSize)
+  const end = Math.min(start + chunkSize, videoSize - 1)
   // dung lượng thực tế của mỗi đoạn stream
   // thường đây là chunkSize trừ đoạn cuối video
-  const contentLength = end - start
+  const contentLength = end - start + 1
   const contentType = mime.getType(videoPath) || 'video/*'
   const headers = {
     'Content-Range': `bytes ${start}-${end}/${videoSize}`,

@@ -4,6 +4,7 @@ import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { defaultErrorHandler } from '~/middlewares/error.middlewares'
 import mediasRouter from '~/routes/medias.routes'
 import staticsRouter from '~/routes/statics.routes'
+import tweetsRouter from '~/routes/tweets.routes'
 import usersRouter from '~/routes/users.routes'
 import databaseServices from '~/services/database.services'
 import { initFolder } from '~/utils/file'
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 databaseServices.connect()
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
+app.use('/tweets', tweetsRouter)
 app.use('/static', express.static(UPLOAD_IMAGE_DIR)) // serve static files
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR)) // serve static files
 app.use('/static/video-stream', staticsRouter)
