@@ -76,3 +76,17 @@ export const USER_MESSAGE = {
   OLD_PASSWORD_IS_NOT_MATCH: 'Mật khẩu cũ không khớp',
   UPLOAD_SUCCESS: ' Tải lên thành công'
 } as const
+
+export const TWEETS_MESSAGE = {
+  TYPE_IS_INVALID: 'Loại tweet không hợp lệ',
+  AUDIENCE_IS_INVALID: 'Hệ thống tweet không hợp lệ',
+  INVALID_PARENT_ID: 'ID tweet cha không hợp lệ',
+  INVALID_CONTENT: 'Noi dung không hợp lệ',
+  PARENT_ID_MUST_BE_TWEET_ID: 'ID tweet cha phải la tweet id',
+  PARENT_ID_MUST_BE_NULL: 'ID tweet cha phải la null',
+  CONTENT_MUST_BE_A_NON_EMPTY_STRING: 'Noi dung phải la chuoi khong rong',
+  CONTENT_MUST_BE_EMPTY_STRING: 'Noi dung phai la chuoi rong',
+  HASHTAGS_MUST_BE_ARRAY_OF_STRING: 'Hashtags phai la mang chuoi',
+  MENTIONS_MUST_BE_ARRAY_OF_USER_ID: 'Mentions phai la mang user id',
+  MEDIAS_MUST_BE_ARRAY_OF_MEDIA_OBJECT: 'Medias phai la mang media object',
+}
