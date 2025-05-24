@@ -2,6 +2,7 @@ import dotenv from 'dotenv'
 import { Collection, Db, MongoClient } from 'mongodb'
 import Follower from '~/models/schemas/Follower.schema'
 import RefreshToken from '~/models/schemas/RefreshToken.schema'
+import Tweet from '~/models/schemas/Tweet.schema'
 import User from '~/models/schemas/User.schemas'
 dotenv.config()
 const DB_USERNAME = process.env.DB_USERNAME
@@ -10,6 +11,7 @@ const DB_NAME = process.env.DB_NAME
 const DB_USER_COLLECTION = process.env.DB_USER_COLLECTION
 const DB_REFRESH_TOKEN_COLLECTION = process.env.DB_REFRESH_TOKEN_COLLECTION
 const DB_FOLLOWER_COLLECTION = process.env.DB_FOLLOWER_COLLECTION
+const DB_TWEET_COLLECTION = process.env.DB_TWEET_COLLECTION
 const uri = `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@facebook.k35yp.mongodb.net/?retryWrites=true&w=majority&appName=Facebook`
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 
@@ -36,6 +38,9 @@ class DatabaseServices {
   }
   get followers(): Collection<Follower> {
     return this.db.collection(DB_FOLLOWER_COLLECTION as string) // trả về collection refresh_tokens
+  }
+  get tweets(): Collection<Tweet> {
+    return this.db.collection(DB_TWEET_COLLECTION as string) // trả về collection Tweet
   }
 }
 // tạo object từ class DatabaseServices
